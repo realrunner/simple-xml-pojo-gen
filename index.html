@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>SimpleXML Bean Generator</title>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="gen.js"></script>
+    <script>
+        $(function(){
+            $("#input").on("change keyup", function() {
+                var gen = new BeanGenerator($(this).val());
+                $("#output").val(gen.generate());
+            });
+        });
+    </script>
+</head>
+<body>
+<h1>XML Example</h1>
+<textarea rows="25" cols="150" id="input" style="font: 11px Courier, 'Courier New'"></textarea>
+<h1>Bean</h1>
+<textarea rows="25" cols="150" id="output" style="font: 11px Courier, 'Courier New'"></textarea>
+</body>
+</html>
