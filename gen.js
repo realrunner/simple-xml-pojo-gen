@@ -126,11 +126,11 @@
         return _.map(fields, function(field) {
             var isClass = !!$this.classes[field.dataType];
             var dataType = isClass ? mkClassName(field.dataType) : field.dataType;
-            var annotation = field.isAttribute ? "@Attribute(name=\""+field.name+"\")" : "@Element(name=\""+field.name+"\")";
+            var annotation = field.isAttribute ? "@Attribute(name=\""+field.name+"\", required = false)" : "@Element(name=\""+field.name+"\", required = false)";
             if(field.isList || field.isInlineList) {
                 dataType = "List<" + dataType + ">";
                 var inline = field.isInlineList ? ", inline = true" : "";
-                annotation = "@ElementList(name = \""+field.name+"\""+inline+")";
+                annotation = "@ElementList(name = \""+field.name+"\""+inline+", required = false)";
             }
             var fieldName = mkFieldName(field.name);
 
@@ -152,12 +152,13 @@
                 dataType = "List<" + dataType + ">";
             }
             var fieldName = mkFieldName(field.name);
-            return i + "public " + dataType + " get" + cap(field.name) + "() { return this." + fieldName + "; }\n" +
-                   i + "public void set" + cap(field.name) + "(" + dataType + " _value) { this." + fieldName + " = _value; }\n";
+            return i + "public " + dataType + " get" + cap(fieldName) + "() { return this." + fieldName + "; }\n" +
+                   i + "public void set" + cap(fieldName) + "(" + dataType + " _value) { this." + fieldName + " = _value; }\n";
         }).join("\n\n");
     };
 
     function mkClassName(str) {
+		str = getLastInDotList(str);
         return reservedCheck(cap(str));
     }
 
@@ -166,6 +167,7 @@
     }
 
     function mkFieldName(str) {
+		str = getLastInDotList(str);
         return reservedCheck(str.charAt(0).toLowerCase() + str.substring(1));
     }
 
@@ -182,6 +184,13 @@
         }
         return str;
     }
+	
+	function getLastInDotList(str) {
+		if(str.indexOf('.') > -1) {
+			return _.map(str.split(/\./), function(s) {return cap(s);}).join("")
+		}
+		return str;
+	}
 
     function getLiteralDataType(val) {
         if(val == "true" || val == "false") {
